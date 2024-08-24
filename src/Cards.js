@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const Cards = () => {
     const deckId = useRef();
+    const [cards, setCards] = useState([]);
 
     useEffect(() => {
         async function shuffleDeck() {
@@ -14,7 +15,19 @@ const Cards = () => {
         shuffleDeck();
     }, []);
 
-    return <div>Cards</div>;
+    async function drawCard() {
+        const response = await axios.get(`https://deckofcardsapi.com/api/deck/${deckId.current}/draw/?count=1`);
+        console.log(response.data);
+        setCards([...cards, response.data.cards[0].image]);
+    }
+
+    return (
+        <div>
+        <h1>Cards</h1>
+
+        <button onClick={drawCard}>Draw Card</button>
+        </div>
+    );
 }; 
 
 export default Cards;
