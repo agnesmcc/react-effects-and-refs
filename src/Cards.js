@@ -5,6 +5,7 @@ const DECK_API_URL = "https://deckofcardsapi.com/api/deck";
 
 const Cards = () => {
     const deckId = useRef();
+    const reshuffleBtn = useRef();
     const [cards, setCards] = useState([]);
 
     useEffect(() => {
@@ -28,10 +29,19 @@ const Cards = () => {
         setCards([...cards, card]);
     }
 
+    async function reshuffleDeck() {
+        reshuffleBtn.current.disabled = true;
+        const response = await axios.get(`${DECK_API_URL}/${deckId.current}/shuffle`);
+        console.log(response.data);
+        setCards([]);
+        reshuffleBtn.current.disabled = false;
+    }
+
     return (
         <div>
         <h1>Cards</h1>
         <button onClick={drawCard}>Draw Card</button>
+        <button onClick={reshuffleDeck} ref={reshuffleBtn}>Shuffle Deck</button>
         <div>
             {cards.map(card => <img
                 key={card.code}
