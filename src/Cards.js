@@ -18,14 +18,21 @@ const Cards = () => {
     async function drawCard() {
         const response = await axios.get(`https://deckofcardsapi.com/api/deck/${deckId.current}/draw/?count=1`);
         console.log(response.data);
-        setCards([...cards, response.data.cards[0].image]);
+        if (response.data.error === "Not enough cards remaining to draw 1 additional") {
+            alert("Error: no cards remaining!");
+            return;
+        }
+        const card = response.data.cards[0];
+        setCards([...cards, card]);
     }
 
     return (
         <div>
         <h1>Cards</h1>
-
         <button onClick={drawCard}>Draw Card</button>
+        <div>
+            {cards.map(card => <img key={card.code} src={card.image} alt={card.code} style={{height: 100}}/>)}
+        </div>
         </div>
     );
 }; 
